@@ -13,10 +13,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundBase.h"
 
-const FName AEnterAgoraDevTestPawn::MoveForwardBinding("MoveForward");
-const FName AEnterAgoraDevTestPawn::MoveRightBinding("MoveRight");
-const FName AEnterAgoraDevTestPawn::FireForwardBinding("FireForward");
-const FName AEnterAgoraDevTestPawn::FireRightBinding("FireRight");
+#include "../StaticBindingsLibrary.h"
 
 AEnterAgoraDevTestPawn::AEnterAgoraDevTestPawn()
 {	
@@ -57,17 +54,17 @@ void AEnterAgoraDevTestPawn::SetupPlayerInputComponent(class UInputComponent* Pl
 	check(PlayerInputComponent);
 
 	// set up gameplay key bindings
-	PlayerInputComponent->BindAxis(MoveForwardBinding);
-	PlayerInputComponent->BindAxis(MoveRightBinding);
-	PlayerInputComponent->BindAxis(FireForwardBinding);
-	PlayerInputComponent->BindAxis(FireRightBinding);
+	PlayerInputComponent->BindAxis(UStaticBindingsLibrary::MoveForwardP0_Binding);
+	PlayerInputComponent->BindAxis(UStaticBindingsLibrary::MoveRightP0_Binding);
+	PlayerInputComponent->BindAxis(UStaticBindingsLibrary::FireP0_Binding);
+	PlayerInputComponent->BindAxis(UStaticBindingsLibrary::FireP1_Binding);
 }
 
 void AEnterAgoraDevTestPawn::Tick(float DeltaSeconds)
 {
 	// Find movement direction
-	const float ForwardValue = GetInputAxisValue(MoveForwardBinding);
-	const float RightValue = GetInputAxisValue(MoveRightBinding);
+	const float ForwardValue = GetInputAxisValue(UStaticBindingsLibrary::MoveForwardP0_Binding);
+	const float RightValue = GetInputAxisValue(UStaticBindingsLibrary::MoveRightP0_Binding);
 
 	// Clamp max size so that (X=1, Y=1) doesn't cause faster movement in diagonal directions
 	const FVector MoveDirection = FVector(ForwardValue, RightValue, 0.f).GetClampedToMaxSize(1.0f);
@@ -91,8 +88,8 @@ void AEnterAgoraDevTestPawn::Tick(float DeltaSeconds)
 	}
 	
 	// Create fire direction vector
-	const float FireForwardValue = GetInputAxisValue(FireForwardBinding);
-	const float FireRightValue = GetInputAxisValue(FireRightBinding);
+	const float FireForwardValue = GetInputAxisValue(UStaticBindingsLibrary::FireP0_Binding);
+	const float FireRightValue = GetInputAxisValue(UStaticBindingsLibrary::FireP1_Binding);
 	const FVector FireDirection = FVector(FireForwardValue, FireRightValue, 0.f);
 
 	// Try and fire a shot

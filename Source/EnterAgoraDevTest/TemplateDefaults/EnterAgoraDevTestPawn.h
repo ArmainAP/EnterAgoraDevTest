@@ -53,12 +53,6 @@ public:
 	/* Handler for the fire timer expiry */
 	void ShotTimerExpired();
 
-	// Static names for axis bindings
-	static const FName MoveForwardBinding;
-	static const FName MoveRightBinding;
-	static const FName FireForwardBinding;
-	static const FName FireRightBinding;
-
 private:
 
 	/* Flag to control firing  */
