@@ -22,4 +22,13 @@ void AMyGameModeBase::BeginPlay()
             PauseMenu_Widget->SetVisibility(ESlateVisibility::Collapsed);
         }
     }
+
+    if (GameUI_WidgetClass)
+    {
+        GameUI_Widget = CreateWidget<UUserWidget>(GetWorld()->GetFirstPlayerController(), GameUI_WidgetClass);
+        if (GameUI_Widget)
+        {
+            GameUI_Widget->AddToViewport();
+        }
+    }
 }

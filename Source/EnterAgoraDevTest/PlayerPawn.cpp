@@ -74,7 +74,8 @@ void APlayerPawn::FireShot(float Value)
         if (World != NULL)
         {
             // spawn the projectile
-            World->SpawnActor<AEnterAgoraDevTestProjectile>(SpawnLocation, FireRotation);
+            AEnterAgoraDevTestProjectile* projectile = World->SpawnActor<AEnterAgoraDevTestProjectile>(SpawnLocation, FireRotation);
+            projectile->bIsP0 = bIsP0;
         }
 
         bCanFire = false;

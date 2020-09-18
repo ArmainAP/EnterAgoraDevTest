@@ -65,10 +65,18 @@ void AWaveManager::EndWave()
     EnemiesKilled = 0;
     GetWorld()->GetTimerManager().ClearTimer(SpawnHandle);
 
-    // Start a new wave if we are in infinite mode
+    // Start next wave if the configuration allows it
     if (FiniteWaves == false)
     {
         StartWave();
+    }
+    else if (MaxWaves > CurrentWave)
+    {
+        StartWave();
+    }
+    else
+    {
+        bGameOver = true;
     }
 }
 

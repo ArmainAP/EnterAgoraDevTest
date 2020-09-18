@@ -20,17 +20,31 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void StartWave();
 
+	// Returns the current wave
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	int GetCurrentWave() { return CurrentWave; };
+
+	// How often the enemies should spawn
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float SpawnFrequency = 0.5f;
 
+	// Where should the enemies spawn
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<AActor*> SpawnPoints;
 
+	// For how long should the enemies spawn
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool FiniteWaves = false;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (EditCondition = "FiniteWaves"))
+	int MaxWaves;
+
+	// In which wave pattern should the enemies spawn
     UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (EditCondition = "FiniteWaves"))
 	class UCurveFloat* SpawnPattern;
+
+	UPROPERTY(BlueprintReadOnly)
+	bool bGameOver = false;
 
 private:
 	// Spawn enemies
@@ -60,7 +74,7 @@ private:
 	FTimerHandle SpawnHandle;
 
 	/*
-	 * In case nu spawn pattern is provided, we spawn the waves according to this algorithm just to spice things up :)
+	 * In case no spawn pattern is provided, we spawn the waves according to this algorithm just to spice things up :)
 	 * http://oeis.org/A280998
 	 * Generates numbers that contain a prime number of "1" in their binary reflected Gray representation.
 	*/

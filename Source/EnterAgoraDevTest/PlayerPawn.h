@@ -28,6 +28,7 @@ public:
     void DealDamage(int Ammount);
 
     //Returns true if we are still alive
+    UFUNCTION(BlueprintCallable, BlueprintPure)
     bool IsAlive();
 
     // Sets the color to the ship's material
@@ -48,6 +49,9 @@ public:
     /** Sound to play each time we fire */
     UPROPERTY(Category = Audio, EditAnywhere, BlueprintReadWrite)
     class USoundBase* FireSound;
+
+    UPROPERTY()
+    bool bIsP0 = true;
 
 protected:
     // Player Health

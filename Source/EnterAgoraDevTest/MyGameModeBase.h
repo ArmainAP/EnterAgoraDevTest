@@ -18,6 +18,12 @@ class ENTERAGORADEVTEST_API AMyGameModeBase : public AGameModeBase
 
 public:
     void TogglePauseMenuVisibility();
+
+    UPROPERTY(BlueprintReadOnly)
+    int P0Score;
+
+    UPROPERTY(BlueprintReadOnly)
+    int P1Score;;
 	
 protected:
     // Called when the game starts or when spawned
@@ -26,7 +32,13 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI Classes")
     TSubclassOf<UUserWidget> PauseMenu_WidgetClass;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI Classes")
+    TSubclassOf<UUserWidget> GameUI_WidgetClass;
+
 private:
     UPROPERTY()
     UUserWidget* PauseMenu_Widget;
+
+    UPROPERTY()
+    UUserWidget* GameUI_Widget;
 };

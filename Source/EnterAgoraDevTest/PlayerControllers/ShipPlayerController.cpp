@@ -21,6 +21,8 @@ void AShipPlayerController::BindPawnInput()
     APlayerPawn* playerPawn = Cast<APlayerPawn>(GetPawn());
     if (playerPawn)
     {
+        playerPawn->Tags.Add("P0");
+
         //Setup input bindings
         InputComponent->BindAxis(UStaticBindingsLibrary::MoveForwardP0_Binding, playerPawn, &APlayerPawn::SetForwardDirection);
         InputComponent->BindAxis(UStaticBindingsLibrary::MoveRightP0_Binding, playerPawn, &APlayerPawn::SetRightDirection);
@@ -40,6 +42,8 @@ APlayerPawn* AShipPlayerController::SpawnP1(FVector P1Location, FRotator P1Rotat
         if (P1)
         {
             P1->SetShipColor(FColor::Green);
+            P1->Tags.Add("P1");
+            P1->bIsP0 = false;
 
             //Setup input bindings for P1
             InputComponent->BindAxis(UStaticBindingsLibrary::MoveForwardP1_Binding, P1, &APlayerPawn::SetForwardDirection);
