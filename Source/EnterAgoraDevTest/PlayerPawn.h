@@ -17,12 +17,21 @@ public:
 	// Sets default values for this pawn's properties
 	APlayerPawn();
 
-    //Sets the movements directions of the ship
+    // Sets the movements directions of the ship
     void SetForwardDirection(float Value);
     void SetRightDirection(float Value);
 
-    //Fire a shot forward
+    // Fire a shot forward
     void FireShot(float Value);
+
+    // Deals some amount of Damage
+    void DealDamage(int Ammount);
+
+    //Returns true if we are still alive
+    bool IsAlive();
+
+    // Sets the color to the ship's material
+    void SetShipColor(FColor newColor);
 
     /** Offset from the ships location to spawn projectiles */
     UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
@@ -40,12 +49,26 @@ public:
     UPROPERTY(Category = Audio, EditAnywhere, BlueprintReadWrite)
     class USoundBase* FireSound;
 
+protected:
+    // Player Health
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    int Health = 100;
+
+    UPROPERTY()
+    UMaterialInstanceDynamic* ShipDynamicMaterial;
+
 private:
     //Handles how the pawn should move
     void HandleMovement();
 
     /* Handler for the fire timer expiry */
     void ShotTimerExpired();
+
+    // Handler for the immunity timer expiry
+    void ImmunityTimerExpired();
+
+    // Flag to check if the player can be damaged
+    bool bCanBeDamaged = true;
 
     //Movement direction of the ship
     FVector2D MovementDirection;
@@ -55,4 +78,7 @@ private:
 
     /** Handle for efficient management of ShotTimerExpired timer */
     FTimerHandle TimerHandle_ShotTimerExpired;
+
+    /** Handle for the management of the damage immunity timer */
+    FTimerHandle TimerHandle_ImmunityTimerExpired;
 };

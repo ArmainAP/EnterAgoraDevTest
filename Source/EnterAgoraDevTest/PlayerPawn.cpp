@@ -8,6 +8,7 @@
 #include "Engine/StaticMesh.h"
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundBase.h"
+#include <Kismet/KismetMaterialLibrary.h>
 
 #include "StaticBindingsLibrary.h"
 
@@ -21,6 +22,10 @@ APlayerPawn::APlayerPawn()
     RootComponent = ShipMeshComponent;
     ShipMeshComponent->SetCollisionProfileName(UCollisionProfile::Pawn_ProfileName);
     ShipMeshComponent->SetStaticMesh(ShipMesh.Object);
+
+    ShipDynamicMaterial = UKismetMaterialLibrary::CreateDynamicMaterialInstance(GetWorld(), ShipMeshComponent->GetMaterial(0));
+    ShipMeshComponent->SetMaterial(0, ShipDynamicMaterial);
+    SetShipColor(FColor::Blue);
 
     // Cache our sound effect
     static ConstructorHelpers::FObjectFinder<USoundBase> FireAudio(TEXT("/Game/TwinStick/Audio/TwinStickFire.TwinStickFire"));
@@ -38,20 +43,28 @@ APlayerPawn::APlayerPawn()
 
 void APlayerPawn::SetForwardDirection(float Value)
 {
-    MovementDirection.X = Value;
-    HandleMovement();
+    if (IsAlive())
+    {
+        MovementDirection.X = Value;
+        HandleMovement();
+    }
 }
 
 void APlayerPawn::SetRightDirection(float Value)
 {
-    MovementDirection.Y = Value;
-    HandleMovement();
+    if (IsAlive())
+    {
+        MovementDirection.Y = Value;
+        HandleMovement();
+    }
 }
 
 void APlayerPawn::FireShot(float Value)
 {
     // If it's ok to fire again
-    if (bCanFire == true && Value != 0.0f)
+    if (bCanFire == true
+        && Value != 0.0f
+        && IsAlive())
     {
         const FRotator FireRotation = GetActorForwardVector().Rotation();
         // Spawn projectile at an offset from this pawn
@@ -75,6 +88,26 @@ void APlayerPawn::FireShot(float Value)
 
         bCanFire = false;
     }
+}
+
+void APlayerPawn::DealDamage(int Ammount)
+{
+    if (bCanBeDamaged)
+    {
+        Health -= Ammount;
+        bCanBeDamaged = false;
+        GetWorld()->GetTimerManager().SetTimer(TimerHandle_ImmunityTimerExpired, this, &APlayerPawn::ImmunityTimerExpired, 1.0f);
+    }
+}
+
+bool APlayerPawn::IsAlive()
+{
+    return Health > 0;
+}
+
+void APlayerPawn::SetShipColor(FColor newColor)
+{
+    ShipDynamicMaterial->SetVectorParameterValue("DiffuseColor", newColor);
 }
 
 void APlayerPawn::HandleMovement()
@@ -104,4 +137,9 @@ void APlayerPawn::HandleMovement()
 void APlayerPawn::ShotTimerExpired()
 {
     bCanFire = true;
+}
+
+void APlayerPawn::ImmunityTimerExpired()
+{
+    bCanBeDamaged = true;
 }
