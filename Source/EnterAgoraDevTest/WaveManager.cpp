@@ -10,6 +10,8 @@
 // Sets default values
 AWaveManager::AWaveManager()
 {
+    SetReplicates(true);
+
     // Just to make sure
     FiniteWaves = FiniteWaves && SpawnPattern != nullptr;
 }

@@ -7,26 +7,30 @@ void AShipPlayerController::BeginPlay()
 {
     Super::BeginPlay();
 
+    if (InputComponent)
+    {
+        // We want the pause menu to be binded to Escape and only Escape
+        InputComponent->BindKey(EKeys::Escape, IE_Released, this, &AShipPlayerController::TogglePauseMenu);
+    }
+
     BindPawnInput();
 }
 
 void AShipPlayerController::BindPawnInput()
 {
-    check(InputComponent);
-
-    // We want the pause menu to be binded to Escape and only Escape
-    InputComponent->BindKey(EKeys::Escape, IE_Released, this, &AShipPlayerController::TogglePauseMenu);
-    
-    //Asserts if the cast fails, meaning the possessed pawn is not derived from APlayerPawn
-    APlayerPawn* playerPawn = Cast<APlayerPawn>(GetPawn());
-    if (playerPawn)
+    if (InputComponent)
     {
-        playerPawn->Tags.Add("P0");
+        //Asserts if the cast fails, meaning the possessed pawn is not derived from APlayerPawn
+        APlayerPawn* playerPawn = Cast<APlayerPawn>(GetPawn());
+        if (playerPawn)
+        {
+            playerPawn->Tags.Add("P0");
 
-        //Setup input bindings
-        InputComponent->BindAxis(UStaticBindingsLibrary::MoveForwardP0_Binding, playerPawn, &APlayerPawn::SetForwardDirection);
-        InputComponent->BindAxis(UStaticBindingsLibrary::MoveRightP0_Binding, playerPawn, &APlayerPawn::SetRightDirection);
-        InputComponent->BindAxis(UStaticBindingsLibrary::FireP0_Binding, playerPawn, &APlayerPawn::FireShot);
+            //Setup input bindings
+            InputComponent->BindAxis(UStaticBindingsLibrary::MoveForwardP0_Binding, playerPawn, &APlayerPawn::SetForwardDirection);
+            InputComponent->BindAxis(UStaticBindingsLibrary::MoveRightP0_Binding, playerPawn, &APlayerPawn::SetRightDirection);
+            InputComponent->BindAxis(UStaticBindingsLibrary::FireP0_Binding, playerPawn, &APlayerPawn::FireShot);
+        }
     }
 }
 

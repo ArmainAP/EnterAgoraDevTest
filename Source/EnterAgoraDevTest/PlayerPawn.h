@@ -50,12 +50,14 @@ public:
     UPROPERTY(Category = Audio, EditAnywhere, BlueprintReadWrite)
     class USoundBase* FireSound;
 
-    UPROPERTY()
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
     bool bIsP0 = true;
 
 protected:
+    virtual void BeginPlay();
+
     // Player Health
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
     int Health = 100;
 
     UPROPERTY()
@@ -64,6 +66,14 @@ protected:
 private:
     //Handles how the pawn should move
     void HandleMovement();
+
+    //Functia genereaza o pozitie noua neocupata de alta piesa
+    UFUNCTION(Server, Reliable, WithValidation)
+    void ServerReplicateTransform(FTransform transform);
+
+    //Functia muta regina pe noua pozitie generata
+    UFUNCTION(NetMulticast, Reliable)
+    void ReplicateTransform(FTransform transform);
 
     /* Handler for the fire timer expiry */
     void ShotTimerExpired();

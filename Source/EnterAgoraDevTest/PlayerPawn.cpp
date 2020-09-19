@@ -11,10 +11,21 @@
 #include <Kismet/KismetMaterialLibrary.h>
 
 #include "StaticBindingsLibrary.h"
+#include <Net/UnrealNetwork.h>
+
+void APlayerPawn::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
+{
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+    DOREPLIFETIME(APlayerPawn, Health);
+}
 
 // Sets default values
 APlayerPawn::APlayerPawn()
 {
+    this->SetReplicates(true);
+    this->SetReplicateMovement(true);
+
     static ConstructorHelpers::FObjectFinder<UStaticMesh> ShipMesh(TEXT("/Game/TwinStick/Meshes/TwinStickUFO.TwinStickUFO"));
 
     // Create the mesh component
@@ -25,7 +36,6 @@ APlayerPawn::APlayerPawn()
 
     ShipDynamicMaterial = UKismetMaterialLibrary::CreateDynamicMaterialInstance(GetWorld(), ShipMeshComponent->GetMaterial(0));
     ShipMeshComponent->SetMaterial(0, ShipDynamicMaterial);
-    SetShipColor(FColor::Blue);
 
     // Cache our sound effect
     static ConstructorHelpers::FObjectFinder<USoundBase> FireAudio(TEXT("/Game/TwinStick/Audio/TwinStickFire.TwinStickFire"));
@@ -111,6 +121,13 @@ void APlayerPawn::SetShipColor(FColor newColor)
     ShipDynamicMaterial->SetVectorParameterValue("DiffuseColor", newColor);
 }
 
+void APlayerPawn::BeginPlay()
+{
+    Super::BeginPlay();
+
+    SetShipColor(bIsP0 ? FColor::Blue : FColor::Green);
+}
+
 void APlayerPawn::HandleMovement()
 {
     // Clamp max size so that (X=1, Y=1) doesn't cause faster movement in diagonal directions
@@ -132,7 +149,27 @@ void APlayerPawn::HandleMovement()
             const FVector Deflection = FVector::VectorPlaneProject(Movement, Normal2D) * (1.f - Hit.Time);
             RootComponent->MoveComponent(Deflection, NewRotation, true);
         }
+
+        ServerReplicateTransform(GetActorTransform());
     }
+}
+
+// Server Validation
+bool APlayerPawn::ServerReplicateTransform_Validate(FTransform transform)
+{
+    return true;
+}
+
+// Server call
+void APlayerPawn::ServerReplicateTransform_Implementation(FTransform transform)
+{
+    ReplicateTransform(transform);
+}
+
+// Client call
+void APlayerPawn::ReplicateTransform_Implementation(FTransform transform)
+{
+    this->SetActorTransform(transform);
 }
 
 void APlayerPawn::ShotTimerExpired()

@@ -19,10 +19,10 @@ class ENTERAGORADEVTEST_API AMyGameModeBase : public AGameModeBase
 public:
     void TogglePauseMenuVisibility();
 
-    UPROPERTY(BlueprintReadOnly)
+    UPROPERTY(BlueprintReadOnly, Replicated)
     int P0Score;
 
-    UPROPERTY(BlueprintReadOnly)
+    UPROPERTY(BlueprintReadOnly, Replicated)
     int P1Score;;
 	
 protected:

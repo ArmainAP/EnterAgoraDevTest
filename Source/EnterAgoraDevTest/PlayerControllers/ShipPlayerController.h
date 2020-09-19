@@ -13,10 +13,10 @@ class ENTERAGORADEVTEST_API AShipPlayerController : public APlayerController
 	GENERATED_BODY()
 
 protected:
-    //Binds inputs keys
+    // Binds inputs keys
     virtual void BeginPlay() override;
 
-    //We bind pawn input here because GetPawn() is NULL during SetupInputComponent()
+    // We bind pawn input here because GetPawn() is NULL during SetupInputComponent()
     virtual void BindPawnInput();
 
     class APlayerPawn* SpawnP1(FVector P1Location, FRotator P1Rotation);

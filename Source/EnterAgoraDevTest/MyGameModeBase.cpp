@@ -1,5 +1,14 @@
 #include "MyGameModeBase.h"
 #include <Blueprint/UserWidget.h>
+#include <Net/UnrealNetwork.h>
+
+void AMyGameModeBase::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
+{
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+    DOREPLIFETIME(AMyGameModeBase, P0Score);
+    DOREPLIFETIME(AMyGameModeBase, P1Score);
+}
 
 void AMyGameModeBase::TogglePauseMenuVisibility()
 {
