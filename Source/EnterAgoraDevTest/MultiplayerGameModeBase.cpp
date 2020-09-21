@@ -5,14 +5,16 @@
 #include "PlayerPawn.h"
 #include <Net/UnrealNetwork.h>
 #include "PlayerControllers/MultiPlayerController.h"
+#include <GameFramework/Actor.h>
 
 void AMultiplayerGameModeBase::PostLogin(APlayerController* NewPlayer)
 {
     Super::PostLogin(NewPlayer);
-    
-    if (AMultiPlayerController* playerController = Cast<AMultiPlayerController>(NewPlayer))
+
+    AMultiPlayerController* playerController = Cast<AMultiPlayerController>(NewPlayer);
+    if (playerController)
     {
-        playerController->ID = Connections;
+        playerController->PossessByIndex(Connections);
         Connections++;
     }
 

@@ -13,11 +13,8 @@ class ENTERAGORADEVTEST_API AMultiPlayerController : public AShipPlayerControlle
 	GENERATED_BODY()
 
 public:
-    UPROPERTY(Replicated)
-    int ID;
-
-protected:
-	virtual void BeginPlay() override;
+	UFUNCTION(NetMulticast, Reliable)
+	void PossessByIndex(int index);
 
 	UPROPERTY()
 	class APlayerPawn* ControlledPlayer;

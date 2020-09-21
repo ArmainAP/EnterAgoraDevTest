@@ -4,22 +4,20 @@
 #include <Net/UnrealNetwork.h>
 #include "../StaticBindingsLibrary.h"
 
-void AMultiPlayerController::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
+void AMultiPlayerController::PossessByIndex_Implementation(int index)
 {
-    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-    DOREPLIFETIME(AMultiPlayerController, ID);
-}
-
-void AMultiPlayerController::BeginPlay()
-{
-    TArray<AActor*> Pawns;
-    UGameplayStatics::GetAllActorsOfClassWithTag(GetWorld(), APlayerPawn::StaticClass(), ID == 0 ? "P0" : "P1", Pawns);
-    if (Pawns.IsValidIndex(0))
+    FString tag = "P" + FString::FromInt(index);
+    TArray<AActor*> actors;
+    UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName(tag), actors);
+    if (actors.IsValidIndex(0))
     {
-        ControlledPlayer = Cast<APlayerPawn>(Pawns[0]);
-        if(HasAuthority()) Possess(ControlledPlayer);
-    }
+        APlayerPawn* pawn = Cast<APlayerPawn>(actors[0]);
+        if (pawn)
+        {
+            Possess(pawn);
+            BindPawnInput();
 
-    Super::BeginPlay();
+            UE_LOG(LogTemp, Warning, TEXT("Test"));
+        }
+    }
 }
