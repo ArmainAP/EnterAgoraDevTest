@@ -18,16 +18,16 @@ void AMultiplayerGameModeBase::PostLogin(APlayerController* NewPlayer)
         Connections++;
     }
 
-//     if (Connections > 1)
-//     {
-//         TArray<AActor*> WaveManagers;
-//         UGameplayStatics::GetAllActorsOfClass(GetWorld(), AWaveManager::StaticClass(), WaveManagers);
-//         if (WaveManagers.Num() > 0 && WaveManagers[0])
-//         {
-//             if (AWaveManager* waveManager = Cast<AWaveManager>(WaveManagers[0]))
-//             {
-//                 waveManager->StartWave();
-//             }
-//         }
-//     }
+    if (Connections > 1)
+    {
+        TArray<AActor*> WaveManagers;
+        UGameplayStatics::GetAllActorsOfClass(GetWorld(), AWaveManager::StaticClass(), WaveManagers);
+        if (WaveManagers.Num() > 0 && WaveManagers[0])
+        {
+            if (AWaveManager* waveManager = Cast<AWaveManager>(WaveManagers[0]))
+            {
+                waveManager->StartWave();
+            }
+        }
+    }
 }

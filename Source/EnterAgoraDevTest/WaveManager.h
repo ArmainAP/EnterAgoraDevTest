@@ -54,6 +54,10 @@ private:
 	// Ends the current wave
 	void EndWave();
 
+	// Spawn enemy across all clients
+	UFUNCTION(NetMulticast, Reliable)
+	void SpawnEnemy(FTransform SpawnTransform);
+
 	// Called when an enemy is killed
 	UFUNCTION()
 	void OnEnemyDestroyed(AActor* DestroyedActor);

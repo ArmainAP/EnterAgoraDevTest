@@ -11,6 +11,10 @@
 AWaveManager::AWaveManager()
 {
     SetReplicates(true);
+    bAlwaysRelevant = true;
+
+    // We want this to be available only on the server.
+    bNetLoadOnClient = false;
 
     // Just to make sure
     FiniteWaves = FiniteWaves && SpawnPattern != nullptr;
@@ -47,13 +51,7 @@ void AWaveManager::WaveTimer()
             }
         }
 
-        UWorld* const World = GetWorld();
-        if (World != NULL)
-        {
-            // spawn the projectile
-            AEnemyShip* spawnedActor = World->SpawnActor<AEnemyShip>(SpawnTransform.GetLocation(), SpawnTransform.GetRotation().Rotator());
-            spawnedActor->OnDestroyed.AddDynamic(this, &AWaveManager::OnEnemyDestroyed);
-        }
+        SpawnEnemy(SpawnTransform);
     }
     else if (EnemiesKilled == EnemiesToKill && EnemiesToKill != 0)
     {
@@ -79,6 +77,17 @@ void AWaveManager::EndWave()
     else
     {
         bGameOver = true;
+    }
+}
+
+void AWaveManager::SpawnEnemy_Implementation(FTransform SpawnTransform)
+{
+    UWorld* const World = GetWorld();
+    if (World != NULL)
+    {
+        // spawn the projectile
+        AEnemyShip* spawnedActor = World->SpawnActor<AEnemyShip>(SpawnTransform.GetLocation(), SpawnTransform.GetRotation().Rotator());
+        spawnedActor->OnDestroyed.AddDynamic(this, &AWaveManager::OnEnemyDestroyed);
     }
 }
 
