@@ -64,19 +64,25 @@ protected:
     UMaterialInstanceDynamic* ShipDynamicMaterial;
 
 private:
-    //Handles how the pawn should move
+    // Handles how the pawn should move
     void HandleMovement();
 
-    //Functia genereaza o pozitie noua neocupata de alta piesa
+    // Replicate Transform, called on server
     UFUNCTION(Server, Reliable, WithValidation)
     void ServerReplicateTransform(FTransform transform);
 
-    //Functia muta regina pe noua pozitie generata
+    // Replicate Transform, multicast
     UFUNCTION(NetMulticast, Reliable)
     void ReplicateTransform(FTransform transform);
 
     /* Handler for the fire timer expiry */
     void ShotTimerExpired();
+
+    UFUNCTION(Server, Reliable, WithValidation)
+    void ServerSpawnProjectile(FVector Location, FRotator Rotation, bool isP0);
+
+    UFUNCTION(NetMulticast, Reliable)
+    void SpawnProjectile(FVector Location, FRotator Rotation, bool isP0);
 
     // Handler for the immunity timer expiry
     void ImmunityTimerExpired();

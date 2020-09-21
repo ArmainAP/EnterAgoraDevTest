@@ -80,16 +80,10 @@ void APlayerPawn::FireShot(float Value)
         // Spawn projectile at an offset from this pawn
         const FVector SpawnLocation = GetActorLocation() + FireRotation.RotateVector(GunOffset);
 
-        UWorld* const World = GetWorld();
-        if (World != NULL)
-        {
-            // spawn the projectile
-            AEnterAgoraDevTestProjectile* projectile = World->SpawnActor<AEnterAgoraDevTestProjectile>(SpawnLocation, FireRotation);
-            projectile->bIsP0 = bIsP0;
-        }
+        ServerSpawnProjectile(SpawnLocation, FireRotation, bIsP0);
 
         bCanFire = false;
-        World->GetTimerManager().SetTimer(TimerHandle_ShotTimerExpired, this, &APlayerPawn::ShotTimerExpired, FireRate);
+        GetWorld()->GetTimerManager().SetTimer(TimerHandle_ShotTimerExpired, this, &APlayerPawn::ShotTimerExpired, FireRate);
 
         // try and play the sound if specified
         if (FireSound != nullptr)
@@ -175,6 +169,27 @@ void APlayerPawn::ReplicateTransform_Implementation(FTransform transform)
 void APlayerPawn::ShotTimerExpired()
 {
     bCanFire = true;
+}
+
+void APlayerPawn::ServerSpawnProjectile_Implementation(FVector Location, FRotator Rotation, bool isP0)
+{
+    SpawnProjectile(Location, Rotation, isP0);
+}
+
+bool APlayerPawn::ServerSpawnProjectile_Validate(FVector Location, FRotator Rotation, bool isP0)
+{
+    return true;
+}
+
+void APlayerPawn::SpawnProjectile_Implementation(FVector Location, FRotator Rotation, bool isP0)
+{
+    UWorld* const World = GetWorld();
+    if (World != NULL)
+    {
+        // spawn the projectile
+        AEnterAgoraDevTestProjectile* projectile = World->SpawnActor<AEnterAgoraDevTestProjectile>(Location, Rotation);
+        projectile->bIsP0 = isP0;
+    }
 }
 
 void APlayerPawn::ImmunityTimerExpired()
